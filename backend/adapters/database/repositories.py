@@ -7,15 +7,18 @@
 
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy import column, Engine
+from sqlalchemy import column
 
 from backend.core.domain.models import (
-    Professor, Aluno
+    Professor, Aluno, PeriodoLetivo
 )
 from backend.core.interfaces.repositories import(
-    ProfessorRepository, AlunoRepository
-    )
+    ProfessorRepository, AlunoRepository, PeriodoLetivoRepository
+)
 
+from backend.adapters.database.database import (
+    ProfessorORM, AlunoORM, PeriodoLetivoORM
+)
 
 class ProfessorRepositoryPostgres(ProfessorRepository):
     """Professor repository class for PostgreSQL implementation."""
@@ -25,19 +28,26 @@ class ProfessorRepositoryPostgres(ProfessorRepository):
         self.database = db
 
 
-    def verify_login(self, professor_email: str, professor_password: str) -> bool:
+    def verify_login(self, professor_email: str, professor_password: str) -> bool | str:
         """Verifies professor login credentials. It queries the database for
         a professor with the given email and checks if the password matches.\\
         Args:
             email (str): Professor's email.
             password (str): Professor's password.
         Returns:
-            bool: `True` if the credentials are valid. Otherwise, returns `False`.
+            bool | str: True if the credentials are valid. False if the
+                credentials are invalid. Otherwise, returns an error message.
         """
-        professor = self.database.query(Professor).filter_by(email=professor_email).first()
-        if professor is None:
+        try:
+            professor_object = self.database.query(ProfessorORM).filter_by(email=professor_email).first()
+        except SQLAlchemyError as exception:
+            error_message = f"An error occurred: {exception}"
+            print(error_message)
+            return error_message
+        if professor_object is None:
             return False
-        return professor.password == professor_password
+
+        return professor_object.password == professor_password
 
 
     def save(self, professor: Professor) -> Professor | str:
@@ -50,9 +60,10 @@ class ProfessorRepositoryPostgres(ProfessorRepository):
                 Otherwise, returns an error message.
         """
         try:
-            self.database.add(professor)
+            professor_orm = ProfessorORM.from_professor(professor)
+            self.database.add(professor_orm)
             self.database.commit()
-            self.database.refresh(professor)
+            self.database.refresh(professor_orm)
         except SQLAlchemyError as exception:
             error_message = f"An error occurred: {exception}"
             print(error_message) # TODO: Remove later
@@ -125,9 +136,10 @@ class AlunoRepositoryPostgres(AlunoRepository):
                 returns an error message.
         """
         try:
-            self.database.add(aluno)
+            aluno_orm = AlunoORM.from_aluno(aluno)
+            self.database.add(aluno_orm)
             self.database.commit()
-            self.database.refresh(aluno)
+            self.database.refresh(aluno_orm)
         except SQLAlchemyError as exception:
             error_message = f"An error occurred: {exception}"
             print(error_message) # TODO: Remove later
@@ -144,7 +156,7 @@ class AlunoRepositoryPostgres(AlunoRepository):
             Aluno | str: Aluno object if the retrieval is successful. Otherwise,
                 returns an error message.
         """
-        aluno = self.database.query(Aluno).filter_by(id=aluno_id).first()
+        aluno = self.database.query(AlunoORM).filter_by(id=aluno_id).first()
         if aluno is None:
             return f"Aluno with ID {aluno_id} not found"
         return aluno
@@ -176,23 +188,117 @@ class AlunoRepositoryPostgres(AlunoRepository):
         Returns:
             list[Aluno]: List of Aluno objects.
         """
-        alunos = self.database.query(Aluno).filter(column('name') == aluno_name).all()
+        alunos = self.database.query(AlunoORM).filter(column('name') == aluno_name).all()
+        alunos = [AlunoORM.to_aluno(aluno) for aluno in alunos]
         if alunos is None:
             return []
         return alunos
 
 
-class SQLAlchemySession:
-    """SQLAlchemy session class."""
+    def get_all_alunos(self) -> list[Aluno]:
+        """Retrieves all Aluno objects from the database. If the retrieval
+        fails, an empty list is returned.\\
+        Returns:
+            list[Aluno]: List of Aluno objects.
+        """
+        alunos_orm = self.database.query(AlunoORM).all()
+        alunos = [AlunoORM.to_aluno(aluno) for aluno in alunos_orm]
+        if alunos is None:
+            return []
+        return alunos
 
-    def __init__(self, engine: Engine):
-        """Initializes the SQLAlchemy session."""
-        self.db_session = Session(bind=engine)
 
-    def get_db_session(self) -> Session:
-        """Returns the SQLAlchemy session."""
-        return self.db_session
+    def get_alunos_paginated(self, offset, limit, name_like) -> list[Aluno]:
+        """Retrieves all Aluno objects from the database. If the retrieval
+        fails, an empty list is returned.\\
+        Returns:
+            list[Aluno]: List of Aluno objects.
+        """
+        alunos_orm = self.database.query(
+                         AlunoORM).filter(
+                         AlunoORM.name.like(f'%{name_like}%')
+                         ).offset(offset).limit(limit).all()
 
-    def close_db_session(self):
-        """Closes the database session."""
-        self.db_session.close()
+        alunos = [AlunoORM.to_aluno(aluno) for aluno in alunos_orm]
+        if alunos is None:
+            return []
+        return alunos
+
+
+class PeriodoLetivoRepositoryPostgres(PeriodoLetivoRepository):
+    """PeriodoLetivo repository class for PostgreSQL implementation."""
+
+    def __init__(self, db: Session):
+        """Initializes the repository with a database session."""
+        self.database = db
+
+
+    def save(self, periodo_letivo: PeriodoLetivo) -> PeriodoLetivo | str:
+        """Saves a PeriodoLetivo object to the database. If the save fails,
+        an exception is raised and the error message is returned.\\
+        Args:
+            periodo_letivo (PeriodoLetivo): PeriodoLetivo object to be saved.
+        Returns:
+            PeriodoLetivo | str: PeriodoLetivo object if the save is successful.
+                Otherwise, returns an error message.
+        """
+        try:
+            periodo_letivo_orm = PeriodoLetivoORM.from_periodo_letivo(periodo_letivo)
+            self.database.add(periodo_letivo_orm)
+            self.database.commit()
+            self.database.refresh(periodo_letivo_orm)
+        except SQLAlchemyError as exception:
+            error_message = f"An error occurred: {exception}"
+            print(error_message) # TODO: Remove later
+            return error_message
+        return periodo_letivo
+
+
+    def delete(self, periodo_letivo: PeriodoLetivo) -> str:
+        """Deletes a PeriodoLetivo object from the database. If the deletion
+        fails, an exception is raised and the error message is returned.\\
+        Args:
+            periodo_letivo (PeriodoLetivo): PeriodoLetivo object to be deleted.
+        Returns:
+            str: Error message if the deletion fails. Otherwise,
+                returns a success message.
+        """
+        try:
+            self.database.delete(periodo_letivo)
+            self.database.commit()
+        except SQLAlchemyError as exception:
+            error_message = f"An error occurred: {exception}"
+            print(error_message) # TODO: Remove later
+            return error_message
+        return "Removed successfully"
+
+
+    def get_by_id(self, periodo_letivo_id: int) -> PeriodoLetivo | str:
+        """Retrieves a PeriodoLetivo object from the database by its ID. If the
+        retrieval fails, an error message is returned.\\
+        Args:
+            periodo_letivo_id (int): PeriodoLetivo's ID.
+        Returns:
+            PeriodoLetivo | str: PeriodoLetivo object if the retrieval is successful.
+                Otherwise, returns an error message.
+        """
+        periodo_letivo = self.database.query(PeriodoLetivoORM).filter_by(id=periodo_letivo_id).first()
+        if periodo_letivo is None:
+            return f"PeriodoLetivo with ID {periodo_letivo_id} not found"
+        return periodo_letivo
+
+
+    def get_all_periodos_letivos(self) -> list[PeriodoLetivo]:
+        """Retrieves all PeriodoLetivo objects from the database. If the retrieval
+        fails, an empty list is returned.\\
+        Returns:
+            list[PeriodoLetivo]: List of PeriodoLetivo objects.
+        """
+        periodos_letivos_orm = self.database.query(PeriodoLetivoORM).all()
+        periodos_letivos = [
+            PeriodoLetivoORM.to_periodo_letivo(periodo_letivo)
+                for periodo_letivo in periodos_letivos_orm
+            ]
+        if periodos_letivos is None:
+            return []
+        return periodos_letivos

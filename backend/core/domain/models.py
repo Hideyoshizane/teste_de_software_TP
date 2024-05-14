@@ -34,3 +34,19 @@ class Professor:
     name: str
     email: str # must be unique
     password: str
+
+@dataclass
+class PeriodoLetivo:
+    """PeriodoLetivo model class for domain layer."""
+    id: int | None
+    start_date: date
+    end_date: date
+    class_shift: str
+
+@dataclass
+class DiaSemAula:
+    """DiaSemAula model class for domain layer."""
+    id: int | None
+    periodo_letivo_id: int
+    date: date
+    reason: str

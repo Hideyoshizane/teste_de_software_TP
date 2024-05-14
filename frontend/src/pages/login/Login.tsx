@@ -13,6 +13,8 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [errorPassword, setErrorPassword] = useState(false);
 
+  const [error, setError] = useState('');
+
   const updateErrorInputs = () => {
     if (!email) {
       setErrorEmail(true);
@@ -31,7 +33,26 @@ const Login = () => {
     updateErrorInputs();
 
     if (email && password) {
-      navigate("home");
+      fetch('http://127.0.0.1:8000/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, password })
+      })
+        .then(response => {
+          if (response.ok) {
+            navigate('home');
+          } else {
+            response.json().then(data => {
+              setError(data.error || 'An error occurred');
+            });
+          }
+        })
+        .catch(error => {
+          setError('An error occurred');
+          console.log(error);
+        });
     }
   };
 
@@ -60,6 +81,8 @@ const Login = () => {
           helperText={errorPassword ? "Campo obrigatório" : ""}
           inputProps={{ "aria-label": "password-helper-text" }}
         />
+
+        {error && <p>{error}</p>}
 
         <LoginButton variant="contained" onClick={() => onClickEnter()}>
           Entrar

@@ -1,5 +1,6 @@
 # Collect latest version within major release
 Flask==2.*
+flask-cors==3.*
 SQLAlchemy==2.*
 pytest==7.*
 psycopg2-binary
