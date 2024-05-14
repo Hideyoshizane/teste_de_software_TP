@@ -1,4 +1,5 @@
-"""Domain models for the school management system."""
+"""Domain models for the school management system. It follows hexagonal
+architecture principles."""
 
 from dataclasses import dataclass
 from datetime import date

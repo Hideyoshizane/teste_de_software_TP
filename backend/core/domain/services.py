@@ -1,4 +1,4 @@
-"""Domain layer services module.
+"""Domain layer services module. It follows hexagonal architecture principles.
 
 - O serviço está desacoplado de qualquer implementação específica,
   tal como DB ou ORM
@@ -7,7 +7,7 @@
 from backend.core.domain.models import Aluno, Professor
 from backend.core.interfaces.repositories import (
     AlunoRepository
-    )
+)
 
 
 class ProfessorService:
@@ -22,9 +22,7 @@ class ProfessorService:
     def login(self, email, password):
         """Verifies professor login credentials."""
         login = self.professor_repository.verify_login(email, password)
-        if login is None:
-            return False
-        return True
+        return login
 
     def create_professor(self, name, email, password):
         """Creates a new Professor object and saves it to the repository.
