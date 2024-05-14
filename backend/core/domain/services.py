@@ -43,18 +43,19 @@ class ProfessorService:
                         password=None):
         """Updates an existing Professor object and saves it to the repository."""
         professor = self.professor_repository.get_by_id(professor_id)
-        if professor_id is not None:
-            professor.id = professor_id
+        if isinstance(professor, str): # if professor is not found
+            return professor
+
         if name is not None:
             professor.name = name
         if email is not None:
             professor.email = email
         if password is not None:
             professor.password = password
-        self.professor_repository.save(professor)
-        if professor is not None:
-            return professor
-        return False
+        professor_result = self.professor_repository.save(professor)
+        if isinstance(professor_result, str): # if professor is not updated
+            return professor_result
+        return professor_result
 
     def remove_professor(self, professor_id):
         """Removes an existing Professor object from the repository."""
@@ -63,8 +64,14 @@ class ProfessorService:
 
     def get_professor_by_name(self, professor_name):
         """Retrieves an existing Professor object from the repository."""
-        professor = self.professor_repository.get_by_name(professor_name)
-        return professor
+        professors = self.professor_repository.get_by_name(professor_name)
+
+        # get all professors and change it to a dictionary of professors
+        professor_dict = {'Professor': []} # {'Professor': [{'id': 1, name: 'joao',...}, professor2, ...]}
+        for professor in professors:
+            professor_dict['Professor'].append(professor.__dict__)
+
+        return professor_dict
 
 
 class AlunoService:
@@ -92,6 +99,7 @@ class AlunoService:
             class_shift=class_shift
         )
         aluno_result = self.aluno_repository.save(aluno)
+        print("\n\nopa\n\n", flush=True)
         if isinstance(aluno_result, str): # if aluno is not created
             return aluno_result
         return aluno_result

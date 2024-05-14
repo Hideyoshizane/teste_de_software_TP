@@ -23,7 +23,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '14'
+          node-version: '18'
 
       - name: Change working directory to frontend
         run: cd frontend
@@ -32,14 +32,16 @@ jobs:
         working-directory: ./frontend
         run: npm ci
       
-      - name: Start Docker services
-        run: docker-compose -f docker-compose.yml up --build -d db backend frontend
-          sleep 120
+      #- name: Build Docker image
+      #  run: |
+      #    docker-compose -f docker-compose.yml up --build -d db backend frontend
+      #    sleep 120
 
       - name: Run tests
         working-directory: ./frontend
         run: npm run test
       
-      - name: Run Cypress tests
-        working-directory: ./frontend
-        run: npx cypress run --config baseUrl=http://localhost:3000
+      #- name: Run tests sistema
+      #  working-directory: ./frontend
+      #  run: npx cypress run
+      

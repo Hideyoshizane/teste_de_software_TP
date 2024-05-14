@@ -8,7 +8,9 @@ from sqlalchemy.orm import sessionmaker, Session, relationship, declarative_base
 import sys
 sys.path.append('../../../')
 
-from backend.core.domain.models import Aluno, PeriodoLetivo, DiaSemAula
+from backend.core.domain.models import (
+    Aluno, PeriodoLetivo, DiaSemAula, Professor
+)
 
 class DatabaseSession:
     """Database session class for SQLAlchemy. It creates a database engine
@@ -99,6 +101,16 @@ class ProfessorORM(Base):
             name=professor.name,
             email=professor.email,
             password=professor.password
+        )
+
+    @staticmethod
+    def to_professor(professor_orm):
+        """Converts a ProfessorORM object to a Professor object."""
+        return Professor(
+            id=professor_orm.id,
+            name=professor_orm.name,
+            email=professor_orm.email,
+            password=professor_orm.password
         )
 
 

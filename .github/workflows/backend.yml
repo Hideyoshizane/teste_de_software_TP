@@ -19,31 +19,33 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r backend/requirements.txt
 
-      - name: Run tests and collect coverage
-        run: |
-          coverage run -m pytest backend/tests/test_services.py
-          coverage xml -o backend/tests/coverage.xml
-
       # Start containers
-      # - name: Start backend and DB containers
-      #   run: |
-      #     docker-compose -f docker-compose.yml up -d db backend
-      #     sleep 15
+      - name: Start backend and DB containers
+        run: |
+          docker-compose -f docker-compose.yml up --build -d db backend
+          sleep 30
 
-      # Run integration tests
+      #   # Run integration tests
       # - name: Run integration tests and collect coverage
       #   run: |
       #     coverage run -m pytest backend/tests/test_controller.py
+      #     coverage xml -o backend/tests/integrarion_tests_coverage.xml
 
-      # - name: Stop containers
-      #   run: docker-compose down
+      - name: Stop containers
+        run: docker-compose down
+
+
+      - name: Run tests and collect coverage
+        run: |
+          coverage run -m pytest backend/tests/test_services.py
+          coverage xml -o unit_tests_coverage.xml
 
       # Upload coverage to Codecov
       - uses: actions/checkout@master
       - uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          # directory: /home/runner/work/Sistema_gestao_escolar/Sistema_gestao_escolar/backend/tests/
-          # files: /home/runner/work/Sistema_gestao_escolar/Sistema_gestao_escolar/backend/tests/coverage.xml
+          #directory: backend/tests
+          files: unit_tests_coverage.xml
           fail_ci_if_error: false
           verbose: true

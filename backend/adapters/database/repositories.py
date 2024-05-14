@@ -100,7 +100,7 @@ class ProfessorRepositoryPostgres(ProfessorRepository):
             Professor | str: Professor object if the retrieval is successful.
                 Otherwise, returns an error message.
         """
-        professor = self.database.query(Professor).filter_by(id=professor_id).first()
+        professor = self.database.query(ProfessorORM).filter_by(id=professor_id).first()
         if professor is None:
             return f"Professor with ID {professor_id} not found"
         return professor
@@ -113,7 +113,8 @@ class ProfessorRepositoryPostgres(ProfessorRepository):
         Returns:
             list[Professor]: List of Professor objects.
         """
-        professors = self.database.query(Professor).filter(column('name') == professor_name).all()
+        professors = self.database.query(ProfessorORM).filter(column('name') == professor_name).all()
+        professors = [ProfessorORM.to_professor(professor) for professor in professors]
         if professors is None:
             return []
         return professors

@@ -106,6 +106,9 @@ class ProfessorController:
         return self.professor_service.remove_professor(professor_id)
         # return True
 
+    def get_professor_by_name(self, name):
+        """Retrieves a list of Professor objects from the repository by name."""
+        return self.professor_service.get_professor_by_name(name)
 
 class PeriodoLetivoController:
     """PeriodoLetivo controller class for adapters. It provides methods for
