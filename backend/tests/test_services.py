@@ -7,10 +7,11 @@ import sys
 sys.path.append('../')
 print(sys.path)
 from backend.tests.database_mock import (
-    AlunoRepositoryPostgresMock, ProfessorRepositoryPostgresMock
+    AlunoRepositoryPostgresMock, ProfessorRepositoryPostgresMock,
+    PeriodoLetivoRepositoryPostgresMock
 )
 from backend.core.domain.services import (
-    AlunoService, ProfessorService
+    AlunoService, ProfessorService, PeriodoLetivoService
 )
 
 class TestAlunoService():
@@ -33,8 +34,9 @@ class TestAlunoService():
         tutor_phone = "555-555-5555"
         class_shift = "morning"
 
-        result = setup.create_aluno(name, born_date, address, tutor_name, tutor_phone, class_shift)
-        #print(result)
+        result = setup.create_aluno(name, born_date, address, tutor_name,
+                                    tutor_phone, class_shift)
+
         assert result.name == name
         assert result.born_date == born_date
         assert result.address == address
@@ -51,8 +53,9 @@ class TestAlunoService():
         tutor_phone = "666-333333333"
         class_shift = "morning"
 
-        result = setup.update_aluno(1, name, born_date, address, tutor_name, tutor_phone, class_shift)
-        
+        result = setup.update_aluno(1, name, born_date, address, tutor_name,
+                                    tutor_phone, class_shift)
+
         assert result.name == name
         assert result.born_date == born_date
         assert result.address == address
@@ -62,8 +65,7 @@ class TestAlunoService():
 
     def test_remove_aluno(self, setup):
         result = setup.remove_aluno(1)
-        assert result is None
-        # assert result == "Removed successfully"
+        assert result == "Removed successfully"
 
     def test_update_aluno_name(self, setup):
         new_name = "Joao Henrique"
@@ -103,8 +105,10 @@ class TestAlunoService():
         assert len(result['Aluno']) == 2
 
     def test_add_another_aluno_and_get_all_alunos(self, setup):
-        setup.create_aluno("Joao", datetime.strptime("2000-01-01", "%Y-%m-%d").date(),
-                           "123 Main St", "Maria Joaquina", "3188888888", "afternoon")
+        setup.create_aluno("Joao", datetime.strptime("2000-01-01",
+                                                     "%Y-%m-%d").date(),
+                           "123 Main St", "Maria Joaquina", "3188888888",
+                           "afternoon")
         result = setup.get_all_alunos()
         assert len(result['Aluno']) == 3
 
@@ -130,7 +134,7 @@ class TestProfessorService():
         password = '1234'
 
         result = setup.create_professor(name, email, password)
-        #print(result)
+
         assert result.name == name
         assert result.email == email
         assert result.password == password
@@ -139,7 +143,8 @@ class TestProfessorService():
         new_password = '4321'
         new_email = "maria@mail.com"
         new_name = 'Maria Joaquina'
-        result = setup.update_professor(1, name=new_name, email=new_email, password=new_password)
+        result = setup.update_professor(1, name=new_name, email=new_email,
+                                        password=new_password)
 
         assert result.name == new_name
         assert result.email == new_email
@@ -196,3 +201,83 @@ class TestProfessorService():
         result = setup.login(email=email, password=password)
         print(result)
         assert result == False
+
+
+class TestPeriodoLetivoService():
+    """Unit tests for PeriodoLetivoService. To enable the tests,
+    a mock repository is used."""
+
+    @pytest.fixture()
+    def setup(self):
+        periodo_letivo_repository = PeriodoLetivoRepositoryPostgresMock()
+        periodo_letivo_service = PeriodoLetivoService(periodo_letivo_repository)
+        return periodo_letivo_service
+
+    def test_create_periodo_letivo(self, setup):
+        class_shift = "Morning"
+        start_date = datetime.strptime("2024-01-01", "%Y-%m-%d").date()
+        end_date = datetime.strptime("2024-06-01", "%Y-%m-%d").date()
+        result = setup.create_periodo_letivo(start_date, end_date, class_shift)
+
+        assert result.start_date == start_date
+        assert result.end_date == end_date
+        assert result.class_shift == class_shift
+
+    def test_update_periodo_letivo(self, setup):
+        new_class_shift = "Afternoon"
+        new_start_date = datetime.strptime("2024-01-01", "%Y-%m-%d").date()
+        new_end_date = datetime.strptime("2024-06-01", "%Y-%m-%d").date()
+        result = setup.update_periodo_letivo(1, new_start_date, new_end_date,
+                                             new_class_shift)
+
+        assert result.start_date == new_start_date
+        assert result.end_date == new_end_date
+        assert result.class_shift == new_class_shift
+
+    def test_remove_periodo_letivo(self, setup):
+        result = setup.remove_periodo_letivo(1)
+        assert result == "Removed successfully"
+
+    def test_update_start_date(self, setup):
+        new_start_date = datetime.strptime("2024-01-01", "%Y-%m-%d").date()
+        result = setup.update_periodo_letivo(1, new_start_date)
+        assert result.start_date == new_start_date
+
+    def test_update_end_date(self, setup):
+        new_end_date = datetime.strptime("2024-06-01", "%Y-%m-%d").date()
+        result = setup.update_periodo_letivo(1, end_date=new_end_date)
+        assert result.end_date == new_end_date
+
+    def test_update_class_shift(self, setup):
+        new_class_shift = "Afternoon"
+        result = setup.update_periodo_letivo(1, class_shift=new_class_shift)
+        assert result.class_shift == new_class_shift
+
+    def test_update_same_class_shift(self, setup):
+        new_class_shift = "Morning"
+        result = setup.update_periodo_letivo(1, class_shift=new_class_shift)
+        assert result.class_shift == new_class_shift
+
+    def test_get_all_periodo_letivo(self, setup):
+        result = setup.get_all_periodos_letivos()
+        assert len(result['PeriodoLetivo']) == 2
+
+    def test_add_another_periodo_letivo_and_get_all_periodo_letivo(self, setup):
+        class_shift = "Afternoon"
+        start_date = datetime.strptime("2024-01-01", "%Y-%m-%d").date()
+        end_date = datetime.strptime("2024-06-01", "%Y-%m-%d").date()
+        setup.create_periodo_letivo(start_date, end_date, class_shift)
+
+        result = setup.get_all_periodos_letivos()
+
+        assert len(result['PeriodoLetivo']) == 3
+
+    def test_add_a_periodo_letivo_and_get_all_periodo_letivo(self, setup):
+        class_shift = "Afternoon"
+        start_date = datetime.strptime("2024-01-01", "%Y-%m-%d").date()
+        end_date = datetime.strptime("2024-06-01", "%Y-%m-%d").date()
+        setup.create_periodo_letivo(start_date, end_date, class_shift)
+
+        result = setup.get_all_periodos_letivos()
+
+        assert len(result['PeriodoLetivo']) == 3

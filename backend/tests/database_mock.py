@@ -1,10 +1,11 @@
 from datetime import datetime
 
 from backend.core.interfaces.repositories import(
-    ProfessorRepository, AlunoRepository
+    ProfessorRepository, AlunoRepository, PeriodoLetivoRepository
     )
-from backend.core.domain.models import Aluno, Professor
-
+from backend.core.domain.models import (
+    Aluno, Professor, PeriodoLetivo
+)
 
 class AlunoRepositoryPostgresMock(AlunoRepository):
     """Mock repository for AlunoRepository. This class is used to
@@ -127,3 +128,50 @@ class ProfessorRepositoryPostgresMock(ProfessorRepository):
             if professor.name == professor_name:
                 results.append(professor)
         return results
+
+
+class PeriodoLetivoRepositoryPostgresMock(PeriodoLetivoRepository):
+    """Mock repository for PeriodoLetivoRepository. This class is used to
+    test the PeriodoLetivoService class.
+    """
+    def __init__(self):
+        """Initializes the mock database with some data. Note that the
+        database here is just a list of PeriodoLetivo objects.
+        """
+        self.database = [
+            PeriodoLetivo(1, datetime.strptime("2023-01-01", "%Y-%m-%d").date(),
+                          datetime.strptime("2023-06-30", "%Y-%m-%d").date(),
+                          'Morning'),
+            PeriodoLetivo(2, datetime.strptime("2023-07-01", "%Y-%m-%d").date(),
+                          datetime.strptime("2023-12-31", "%Y-%m-%d").date(),
+                          'Afternoon')
+            ]
+
+    def save(self, periodo_letivo: PeriodoLetivo) -> PeriodoLetivo | str:
+        # Verify if the periodo_letivo already exists
+        if periodo_letivo.id is None:
+            periodo_letivo.id = len(self.database) + 1
+            self.database.append(periodo_letivo)
+            return periodo_letivo
+
+        for periodo_letivo_database in self.database:
+            if periodo_letivo_database.id == periodo_letivo.id:
+                periodo_letivo_database = periodo_letivo
+                return periodo_letivo
+
+
+    def get_by_id(self, periodo_letivo_id: int) -> PeriodoLetivo | str:
+        for periodo_letivo in self.database:
+            if periodo_letivo.id == periodo_letivo_id:
+                return periodo_letivo
+        return f"PeriodoLetivo with ID {periodo_letivo_id} not found"
+
+
+    def delete(self, periodo_letivo: int) -> str:
+        for periodo_letivo_database in self.database:
+            if periodo_letivo_database.id == periodo_letivo:
+                self.database.remove(periodo_letivo_database)
+        return "Removed successfully"
+
+    def get_all_periodos_letivos(self) -> list[PeriodoLetivo]:
+        return self.database
