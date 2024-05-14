@@ -7,7 +7,13 @@ from backend.core.domain.models import Aluno, Professor
 
 
 class AlunoRepositoryPostgresMock(AlunoRepository):
+    """Mock repository for AlunoRepository. This class is used to
+    test the AlunoService class.
+    """
     def __init__(self):
+        """Initializes the mock database with some data. Note that the
+        database here is just a list of Aluno objects.
+        """
         self.database = [
             Aluno(1, 'Joao', datetime.strptime("2001-01-01", "%Y-%m-%d").date(),
                   'Algum lugar', 'Maria', '3199999999', 'morning'),
@@ -66,7 +72,13 @@ class AlunoRepositoryPostgresMock(AlunoRepository):
 
 
 class ProfessorRepositoryPostgresMock(ProfessorRepository):
+    """Mock repository for ProfessorRepository. This class is used to
+    test the ProfessorService class.
+    """
     def __init__(self):
+        """Initializes the mock database with some data. Note that the
+        database here is just a list of Professor objects.
+        """
         self.database = [Professor(1, 'Maria', 'maria@professora.com', '1234')]
 
     def verify_login(self, email, password) -> bool:

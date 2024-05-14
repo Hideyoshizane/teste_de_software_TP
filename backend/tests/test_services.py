@@ -6,10 +6,17 @@ from datetime import datetime
 import sys
 sys.path.append('../')
 print(sys.path)
-from backend.tests.database_mock import AlunoRepositoryPostgresMock, ProfessorRepositoryPostgresMock
-from backend.core.domain.services import AlunoService, ProfessorService
+from backend.tests.database_mock import (
+    AlunoRepositoryPostgresMock, ProfessorRepositoryPostgresMock
+)
+from backend.core.domain.services import (
+    AlunoService, ProfessorService
+)
 
 class TestAlunoService():
+    """Unit tests for AlunoService. To enable the tests,
+    a mock repository is used.
+    """
 
     @pytest.fixture()
     def setup(self):
@@ -56,6 +63,7 @@ class TestAlunoService():
     def test_remove_aluno(self, setup):
         result = setup.remove_aluno(1)
         assert result is None
+        # assert result == "Removed successfully"
 
     def test_update_aluno_name(self, setup):
         new_name = "Joao Henrique"
@@ -106,6 +114,8 @@ class TestAlunoService():
 
 
 class TestProfessorService():
+    """Unit tests for ProfessorService. To enable the tests,
+    a mock repository is used."""
 
     @pytest.fixture()
     def setup(self):
@@ -130,7 +140,7 @@ class TestProfessorService():
         new_email = "maria@mail.com"
         new_name = 'Maria Joaquina'
         result = setup.update_professor(1, name=new_name, email=new_email, password=new_password)
-        
+
         assert result.name == new_name
         assert result.email == new_email
         assert result.password == new_password
@@ -149,7 +159,6 @@ class TestProfessorService():
         result = setup.update_professor(1, password=new_password)
         assert result.password == new_password
 
-    
     def test_update_professor_email(self, setup):
         new_email = "maria@mail.com"
         result = setup.update_professor(1, email=new_email)
