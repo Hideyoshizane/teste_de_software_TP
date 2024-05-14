@@ -26,7 +26,7 @@ describe("EventsNext component", () => {
   
       // Assert
       const eventCards = screen.getAllByRole("img");
-      expect(eventCards.length).toBe(8);
+      expect(eventCards.length).toBe(9);
     });
 
     it("should display the 'Cadastrar Novos Eventos' button", () => {
