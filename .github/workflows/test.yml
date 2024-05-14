@@ -31,6 +31,11 @@ jobs:
       - name: Install dependencies
         working-directory: ./frontend
         run: npm ci
+      
+      - name: Build Docker image
+        run: | #docker build -t my-docker-image:latest -f caminho_do_Dockerfile .
+          docker-compose -f docker-compose.yml up --build -d db backend frontend
+          sleep 120
 
       - name: Run tests
         working-directory: ./frontend
