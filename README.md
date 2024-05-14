@@ -7,17 +7,21 @@ Criar um sistema de Gestão Escolar (customizado), para oferecer a um professor 
 - Professor logar no sistema
 - Cadastrar, editar e remover alunos
 - Cadastrar, editar e remover professores
+- Adicionar datas de aulas, datas de feriados e datas sem aula
+- Adicionar sistema de controle de frequência de alunos
 
 ## Tecnologias
-### Backend
-- Python
+### _Backend_
 - Flask
 - SQLAlchemy
 - PostgreSQL
-
-### Frontend
-- Typescript
+- Python
+### _Frontend_
 - React
+- Material UI
+- Typescript
+### Infraestrutura
+- Docker
 
 ### Arquitetura
 - Arquitetura Hexagonal
