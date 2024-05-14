@@ -39,3 +39,4 @@ jobs:
       - name: Run tests sistema
         working-directory: ./frontend
         run: npx cypress run
+      

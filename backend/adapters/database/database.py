@@ -2,8 +2,8 @@
 
 from sqlalchemy import create_engine, Engine
 from sqlalchemy import Column, Integer, String, Date, ForeignKey
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, Session, relationship
+# from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker, Session, relationship, declarative_base
 
 import sys
 sys.path.append('../../../')
