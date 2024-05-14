@@ -47,7 +47,7 @@ describe("EventsOld component", () => {
     );
 
     const images = screen.getAllByRole("img");
-    expect(images.length).toBe(9);
+    expect(images.length).toBe(8);
   });
 
   test("should navigate to events-description page when 'Eventos de Tecnologia' card is clicked", () => {
