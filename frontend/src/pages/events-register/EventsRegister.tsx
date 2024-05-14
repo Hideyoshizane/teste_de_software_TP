@@ -6,13 +6,32 @@ import CardMedia from '@mui/material/CardMedia';
 
 import Header from "shared-components/header/Header";
 import { Container, Column, RegisterButton } from "./styles";
-import { nextEvent } from "data/nextEvent";
-import { MenuList } from "data/data";
+import { nextEvent } from "data-front/nextEvent";
+import { MenuList } from "data-front/data";
+import { STORAGE_EVENT } from "utils/storageKeys";
 
 
 const EventsRegister = () => {
 
-  const onNavigateScheduledEvents = () =>{
+  
+  //cria states para o formulario abaixo
+  const [name, setName] = React.useState('');
+  const [date, setDate] = React.useState('');
+  const [description, setDescription] = React.useState('');
+  
+  const onSave = () => {
+    const valueStr = localStorage.getItem(STORAGE_EVENT);
+
+    const values = [{name, description, date}]
+
+    if(valueStr) {
+      const events = JSON.parse(valueStr);
+      values.push(...events);
+      values.reverse();
+    }
+
+    localStorage.setItem(STORAGE_EVENT, JSON.stringify(values));
+
     window.location.replace('/scheduled-events');
   }
 
@@ -23,44 +42,41 @@ const EventsRegister = () => {
         <Column>
           <TextField
             fullWidth
+            value={name}
+            onChange={(e) => setName(e.target.value)}
             type="text"
             label="Nome do evento"
             variant="outlined"
+            data-test="name_event"
           />
 
           <TextField
             InputLabelProps={{ shrink: true }}
             fullWidth
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
             type="date"
-            label="Data de Nascimento"
+            label="Data do evento"
             variant="outlined"
+            data-test="date"
           />
 
-          <TextField
-            fullWidth
-            type="text"
-            label="Tipo do Evento"
-            variant="outlined"
-          />
         </Column>
 
         <Column>
           <TextField
             fullWidth
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
             type="text"
             label="Descrição do Evento"
             variant="outlined"
+            data-test="description_event"
           />
-          <Typography variant="h5">
-            Adicionar foto ilustrativa para o evento
-          </Typography>
-          <Button variant="contained" sx={{color: "#ffffff", fontSize: "1.2rem" }} >
-            Adicionar fotos de capa
-          </Button>
         </Column>
       </Container>
       <Box sx={{textAlign: 'center'}} >
-        <RegisterButton variant="contained" onClick={() => onNavigateScheduledEvents()}>
+        <RegisterButton variant="contained" onClick={() => onSave()}>
           Salvar Evento
         </RegisterButton>
       </Box>

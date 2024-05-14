@@ -1,0 +1,3 @@
+export const STORAGE_EVENT = 'STORAGE_EVENT';
+
+export const ATTENDANCE_LIST = 'ATTENDANCE_LIST'

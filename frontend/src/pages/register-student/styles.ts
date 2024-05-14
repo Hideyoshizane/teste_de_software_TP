@@ -20,4 +20,12 @@ export const Column = styled(Box)(({ theme }) => ({
 
 export const RegisterButton = styled(Button)(({ theme }) => ({
   marginTop: "24px",
+  alignSelf: 'center'
 }));
+
+export const BodyRegisterButtonContainer = styled(Box)(() => ({
+  display: "flex",
+  flex: 1,
+  justifyContent: 'center'
+}))
+

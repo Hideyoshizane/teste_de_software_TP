@@ -1,4 +1,10 @@
 import React from "react";
+import { Box } from "@mui/material";
+import { useMatch, useNavigate, useResolvedPath } from "react-router-dom";
+
+import LogoIcon from "../../assets/svgs/LogoIcon";
+import { useDrawerContext } from "shared-components/contexts/DrawerContext";
+
 import {
   Container,
   LogoBox,
@@ -7,12 +13,37 @@ import {
   Subtitle,
   Title,
 } from "./styles";
-import { Box } from "@mui/material";
-import LogoIcon from "../../assets/svgs/LogoIcon";
-import { useNavigate } from "react-router-dom";
+
+
+interface IListItemLink{
+  to: string;
+  label: string;
+  onClick: (() => void) | undefined;
+}
+
+//Componente será responsável por renderizar o menu lateral
+const ListItemLink: React.FC<IListItemLink> = ({to, label, onClick}) => {
+  const navigate = useNavigate();
+
+  const resolvePath = useResolvedPath(to);
+
+  //Configurando para saber se a opção e menu está selecionada ou não
+  const match = useMatch({path: resolvePath.pathname, end: false});
+
+  const handleClick = () => {
+    navigate(to);
+    onClick?.();
+  };
+
+  return (
+    <NavButton variant="text" onClick={handleClick}>
+      {label}
+    </NavButton>
+  );
+};
 
 const Header = () => {
-  const navigate = useNavigate();
+  const { isDrawerOpen, toggleDrawerOpen, drawerOptions } = useDrawerContext();
 
   return (
     <Container>
@@ -24,18 +55,31 @@ const Header = () => {
         </Box>
       </LogoBox>
       <NavBox>
-        <NavButton variant="text" onClick={() => navigate("home")}>
-          Home
-        </NavButton>
-        <NavButton variant="text" onClick={() => navigate("presenca")}>
-          Presença
-        </NavButton>
-        <NavButton variant="text" onClick={() => navigate("relatorios")}>
-          Relatórios
-        </NavButton>
-        <NavButton variant="text" onClick={() => navigate("eventos")}>
-          Eventos
-        </NavButton>
+        <ListItemLink 
+          to="/home" 
+          label={"Home"} 
+          onClick={toggleDrawerOpen}
+        />
+        <ListItemLink 
+          to="/attendance-list" 
+          label={"Presenca"} 
+          onClick={toggleDrawerOpen}
+        />
+        <ListItemLink 
+          to="/attendance-report" 
+          label={"Relatorio"} 
+          onClick={toggleDrawerOpen}
+        />
+        <ListItemLink 
+          to="/scheduled-events" 
+          label={"Eventos"} 
+          onClick={toggleDrawerOpen}
+        />
+        <ListItemLink 
+          to="/no-class-day" 
+          label={"Dias sem aula"} 
+          onClick={toggleDrawerOpen}
+        />
       </NavBox>
     </Container>
   );

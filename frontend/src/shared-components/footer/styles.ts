@@ -10,7 +10,7 @@ export const Container = styled(Box)(({theme}) => ({
   background: theme.palette.primary.main,
   margin: '0px -8px',
   gap: '16px',
-  position: 'absolute',
+  position: 'fixed',
   bottom: 0,
 }))
 

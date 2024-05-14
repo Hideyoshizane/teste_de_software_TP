@@ -1,0 +1,94 @@
+{
+  "aluno": [
+    {
+      "id": 2,
+      "name": "José Souza",
+      "born_date": "2010-05-30",
+      "address": "Avenida 2, barão 25",
+      "tutor_name": "José Souza",
+      "tutor_phone": "11 2345-6789",
+      "class_shift": "Manhã"
+    },
+    {
+      "id": 3,
+      "name": "Pedro Oliveira",
+      "born_date": "2010-05-10",
+      "address": "Praça 10, 789",
+      "tutor_name": "Ana Oliveira",
+      "tutor_phone": "11 9876-5432",
+      "class_shift": "Manhã"
+    },
+    {
+      "id": 3,
+      "name": "Lucas Oliveira",
+      "born_date": "2009-07-10",
+      "address": "Praça 3, 789",
+      "tutor_name": "Carla Oliveira",
+      "tutor_phone": "11 2345-6789",
+      "class_shift": "Manhã"
+    },
+    {
+      "id": 4,
+      "name": "Maria Santos",
+      "born_date": "2012-02-28",
+      "address": "Rua 4, 321",
+      "tutor_name": "José Santos",
+      "tutor_phone": "11 5555-6666",
+      "class_shift": "Tarde"
+    },
+    {
+      "id": 5,
+      "name": "Pedro Alves",
+      "born_date": "2011-09-05",
+      "address": "Avenida 5, 987",
+      "tutor_name": "Mariana Alves",
+      "tutor_phone": "11 7777-8888",
+      "class_shift": "Manhã"
+    },
+    {
+      "id": 6,
+      "name": "Julia Pereira",
+      "born_date": "2010-11-20",
+      "address": "Rua 6, 654",
+      "tutor_name": "Fernando Pereira",
+      "tutor_phone": "11 9999-0000",
+      "class_shift": "Tarde"
+    },
+    {
+      "id": 7,
+      "name": "André Silva",
+      "born_date": "2009-06-18",
+      "address": "Praça 7, 321",
+      "tutor_name": "Patricia Silva",
+      "tutor_phone": "11 4444-3333",
+      "class_shift": "Manhã"
+    },
+    {
+      "id": 8,
+      "name": "Isabela Santos",
+      "born_date": "2013-04-12",
+      "address": "Avenida 8, 123",
+      "tutor_name": "Ricardo Santos",
+      "tutor_phone": "11 2222-1111",
+      "class_shift": "Tarde"
+    },
+    {
+      "id": 9,
+      "name": "Felipe Ferreira",
+      "born_date": "2003-11-03",
+      "address": "Rua Jose tomaz 21 bairro São Jose",
+      "tutor_name": "João Gomez",
+      "tutor_phone": "31 99998888",
+      "class_shift": "3"
+    },
+    {
+      "id": 10,
+      "name": "Ze Delivery",
+      "born_date": "",
+      "address": "Rua Dos Principes 21 - Bairro Estudantiu",
+      "tutor_name": "Marilia Gabriela",
+      "tutor_phone": "31 44445555",
+      "class_shift": "1"
+    }
+  ]
+}

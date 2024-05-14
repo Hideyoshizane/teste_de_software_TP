@@ -8,7 +8,7 @@ from sqlalchemy.orm import sessionmaker, Session, relationship
 import sys
 sys.path.append('../../../')
 
-from backend.core.domain.models import Aluno, PeriodoLetivo
+from backend.core.domain.models import Aluno, PeriodoLetivo, DiaSemAula
 
 class DatabaseSession:
     """Database session class for SQLAlchemy. It creates a database engine
@@ -18,7 +18,7 @@ class DatabaseSession:
     """
     def __init__(self):
         """Initializes the database engine and session."""
-        ips = ['172.18.0.2', '172.19.0.2']
+        ips = ['172.19.0.2', '172.18.0.2']
         for ip in ips:
             try:
                 # postgresql://<username>:<password>@<host>:<port>/<database_name>
@@ -140,6 +140,25 @@ class DiaSemAulaORM(Base):
     periodo_letivo_id = Column(Integer, ForeignKey('periodo_letivo.id'), nullable=False)
     date = Column(Date, nullable=False)
     reason = Column(String(100), nullable=False)
+
+    @staticmethod
+    def from_dia_sem_aula(dia_sem_aula):
+        """Converts a DiaSemAula object to a DiaSemAulaORM object."""
+        return DiaSemAulaORM(
+            periodo_letivo_id=dia_sem_aula.periodo_letivo_id,
+            date=dia_sem_aula.date,
+            reason=dia_sem_aula.reason
+        )
+
+    @staticmethod
+    def to_dia_sem_aula(dia_sem_aula_orm):
+        """Converts a DiaSemAulaORM object to a DiaSemAula object."""
+        return DiaSemAula(
+            id=dia_sem_aula_orm.id,
+            periodo_letivo_id=dia_sem_aula_orm.periodo_letivo_id,
+            date=dia_sem_aula_orm.date,
+            reason=dia_sem_aula_orm.reason
+        )
 
 
 def create_tables(engine: Engine):

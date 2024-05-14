@@ -1,18 +1,19 @@
 import React from "react";
 import { Box } from '@mui/system';
 import { useNavigate } from "react-router-dom";
+import { useLocation } from 'react-router-dom';
+
 import { Button, Card, CardActionArea, CardContent, Grid, Paper, Typography } from "@mui/material";
 import CardMedia from '@mui/material/CardMedia';
 
 import Header from "shared-components/header/Header";
 import { Descricao, Subtitle } from "./styles";
-import { nextEvent } from "data/nextEvent";
-import { MenuList } from "data/data";
+import { nextEvent } from "data-front/nextEvent";
+import { MenuList } from "data-front/data";
 
 
 const EventsNext = () => {
-  
-   //Importando as imagens
+  //Importando as imagens
    const EventoDeTecnologia = require('../../images/Rectangle16.png');
    const EventoDeSaude = require('../../images/Rectangle17.png');
    const EventoDeEsporte = require('../../images/Rectangle18.png');

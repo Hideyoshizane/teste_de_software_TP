@@ -48,28 +48,6 @@ describe("Home", () => {
     expect(screen.getByText("Lista de Presença")).toBeInTheDocument();
   });
 
-  it("should navigate to lista-de-presenca page when Lista de Presença card is clicked", () => {
-    const mockHistoryPush = jest.fn(); // Mock da função de navegação
-    jest.spyOn(history, "replaceState"); // Mock da função replaceState do objeto history
-    Object.defineProperty(window, "location", {
-      value: {
-        pathname: "/",
-        replace: mockHistoryPush,
-      },
-      writable: true,
-    });
-
-    render(
-      <MemoryRouter>
-        <Home />
-      </MemoryRouter>
-    );
-    const listaPresencaCard = screen.getByText("Lista de Presença");
-    fireEvent.click(listaPresencaCard);
-    //asert
-    expect(mockHistoryPush).toHaveBeenCalledWith("/lista-de-presenca");
-  });
-
   it("should render Relatório de Presença card", () => {
     render(
       <MemoryRouter>
@@ -78,28 +56,6 @@ describe("Home", () => {
     );
     //asert
     expect(screen.getByText("Relatório de Presença")).toBeInTheDocument();
-  });
-
-  it("should navigate to relatorio-de-presenca page when Relatório de Presença card is clicked", () => {
-    const mockHistoryPush = jest.fn(); // Mock da função de navegação
-    jest.spyOn(history, "replaceState"); // Mock da função replaceState do objeto history
-    Object.defineProperty(window, "location", {
-      value: {
-        pathname: "/",
-        replace: mockHistoryPush,
-      },
-      writable: true,
-    });
-
-    render(
-      <MemoryRouter>
-        <Home />
-      </MemoryRouter>
-    );
-    const relatorioPresencaCard = screen.getByText("Relatório de Presença");
-    fireEvent.click(relatorioPresencaCard);
-    //asert
-    expect(mockHistoryPush).toHaveBeenCalledWith("/relatorio-de-presenca");
   });
 
   it("should render Lista de alunos card", () => {

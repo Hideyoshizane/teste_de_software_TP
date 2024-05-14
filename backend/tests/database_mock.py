@@ -9,8 +9,10 @@ from backend.core.domain.models import Aluno, Professor
 class AlunoRepositoryPostgresMock(AlunoRepository):
     def __init__(self):
         self.database = [
-            Aluno(1, 'Joao', datetime.strptime("2001-01-01", "%Y-%m-%d").date(), 'Algum lugar', 'Maria', '3199999999', 'morning'),
-            Aluno(2, 'Maria', datetime.strptime("2001-01-02", "%Y-%m-%d").date(), 'Lugar algum', 'Maria', '3199999998', 'morning'),
+            Aluno(1, 'Joao', datetime.strptime("2001-01-01", "%Y-%m-%d").date(),
+                  'Algum lugar', 'Maria', '3199999999', 'morning'),
+            Aluno(2, 'Maria', datetime.strptime("2001-01-02", "%Y-%m-%d").date(),
+                  'Lugar algum', 'Maria', '3199999998', 'morning'),
             ]
 
     def save(self, aluno: Aluno) -> Aluno | str:
@@ -37,11 +39,11 @@ class AlunoRepositoryPostgresMock(AlunoRepository):
 
 
     def delete(self, aluno_id: int) -> str:
-        
         for aluno_database in self.database:
             if aluno_database.id == aluno_id:
                 self.database.remove(aluno_database)
         return "Removed successfully"
+
 
     def get_by_name(self, aluno_name: str) -> list[Aluno]:
         results = []
@@ -49,6 +51,18 @@ class AlunoRepositoryPostgresMock(AlunoRepository):
             if aluno.name == aluno_name:
                 results.append(aluno)
         return results
+
+
+    def get_all_alunos(self) -> list[Aluno]:
+        return self.database
+
+
+    def get_alunos_paginated(self, offset, limit, name_like) -> list[Aluno]:
+        results = []
+        for aluno in self.database:
+            if name_like in aluno.name:
+                results.append(aluno)
+        return results[offset:offset+limit]
 
 
 class ProfessorRepositoryPostgresMock(ProfessorRepository):

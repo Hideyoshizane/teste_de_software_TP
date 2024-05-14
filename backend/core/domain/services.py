@@ -4,9 +4,9 @@
   tal como DB ou ORM
 """
 
-from backend.core.domain.models import Aluno, Professor, PeriodoLetivo
+from backend.core.domain.models import Aluno, Professor, PeriodoLetivo, DiaSemAula
 from backend.core.interfaces.repositories import (
-    AlunoRepository, PeriodoLetivoRepository
+    AlunoRepository, PeriodoLetivoRepository, DiaSemAulaRepository
 )
 
 
@@ -91,10 +91,10 @@ class AlunoService:
             tutor_phone=tutor_phone,
             class_shift=class_shift
         )
-        aluno = self.aluno_repository.save(aluno)
-        if isinstance(aluno, str): # if aluno is not found
-            return aluno
-        return aluno
+        aluno_result = self.aluno_repository.save(aluno)
+        if isinstance(aluno_result, str): # if aluno is not created
+            return aluno_result
+        return aluno_result
 
 
     def update_aluno(self, aluno_id, name=None, born_date=None,
@@ -117,8 +117,10 @@ class AlunoService:
             aluno.tutor_phone = tutor_phone
         if class_shift is not None:
             aluno.class_shift = class_shift
-        self.aluno_repository.save(aluno)
-        return aluno
+        aluno_result = self.aluno_repository.save(aluno)
+        if isinstance(aluno_result, str): # if aluno is not updated
+            return aluno_result
+        return aluno_result
 
 
     def remove_aluno(self, aluno_id):
@@ -250,3 +252,56 @@ class PeriodoLetivoService:
             periodos_letivos_dict['PeriodoLetivo'].append(periodo_letivo.__dict__)
 
         return periodos_letivos_dict
+
+
+class DiaSemAulaService:
+    def __init__(self, dia_sem_aula_repository: DiaSemAulaRepository):
+        self.dia_sem_aula_repository = dia_sem_aula_repository
+
+    def create_dia_sem_aula(self, periodo_letivo_id, date, reason):
+        """Creates a new DiaSemAula object and saves it to the repository.
+        When creating a new DiaSemAula object, the ID does not need to be
+        specified, since it is generated automatically by the database.
+        """
+        dia_sem_aula = DiaSemAula(
+            id=None,
+            periodo_letivo_id=periodo_letivo_id,
+            date=date,
+            reason=reason
+        )
+        dia_sem_aula = self.dia_sem_aula_repository.save(dia_sem_aula)
+        if isinstance(dia_sem_aula, str):
+            return dia_sem_aula
+        return dia_sem_aula
+
+
+    def update_dia_sem_aula(self, dia_sem_aula_id, date=None, reason=None):
+        """Updates an existing DiaSemAula object and saves it to the repository."""
+        dia_sem_aula = self.dia_sem_aula_repository.get_by_id(dia_sem_aula_id)
+        if isinstance(dia_sem_aula, str):
+            return dia_sem_aula
+
+        if date is not None:
+            dia_sem_aula.date = date
+        if reason is not None:
+            dia_sem_aula.reason = reason
+        self.dia_sem_aula_repository.save(dia_sem_aula)
+        return dia_sem_aula
+
+
+    def remove_dia_sem_aula(self, dia_sem_aula_id):
+        """Removes an existing DiaSemAula object from the repository."""
+        dia_sem_aula = self.dia_sem_aula_repository.get_by_id(dia_sem_aula_id)
+        message = self.dia_sem_aula_repository.delete(dia_sem_aula)
+        return message
+
+
+    def get_all_dias_sem_aula(self) -> dict:
+        """Retrieves all existing DiaSemAula objects from the repository."""
+        dias_sem_aula = self.dia_sem_aula_repository.get_all_dias_sem_aula()
+
+        dias_sem_aula_dict = {'DiaSemAula': []}
+        for dia in dias_sem_aula:
+            dias_sem_aula_dict['DiaSemAula'].append(dia.__dict__)
+
+        return dias_sem_aula_dict

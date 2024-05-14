@@ -1,38 +1,29 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import Header from "../../shared-components/header/Header";
-import { Container, Column, RegisterButton } from "./styles";
+import { Container, Column, RegisterButton, BodyRegisterButtonContainer } from "./styles";
 import {
-  InputLabel,
   MenuItem,
-  OutlinedInput,
-  Select,
   TextField,
-  TextFieldProps,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { ClassShift } from "utils/enums";
+import { AlunosServices } from "services/alunos/AlunosServices";
 
 const RegisterStudent = () => {
   const navigate = useNavigate();
 
-  const [fullName, setFullName] = useState("");
   const [errorFullName, setErrorFullName] = useState(false);
 
-  const [dataNascimento, setDataNascimento] = useState("");
   const [errorDataNascimento, setErrorDataNascimento] = useState(false);
 
-  const [address, setAddress] = useState("");
   const [errorAddress, setErrorAddress] = useState(false);
 
-  const [responsibleTeacher, setResponsibleTeacher] = useState("");
   const [errorResponsibleTeacher, setErrorResponsibleTeacher] = useState(false);
 
-  const [phoneResponsibleTeacher, setPhoneResponsibleTeacher] = useState("");
   const [errorPhoneResponsibleTeacher, setErrorPhoneResponsibleTeacher] =
     useState(false);
 
-  const [shift, setShift] = useState<ClassShift>();
   const [errorShift, setErrorShift] = useState(true);
 
   const updateErrorInputs = () => {
@@ -48,12 +39,36 @@ const RegisterStudent = () => {
     // }
   };
 
-  const onClickEnter = () => {
-    updateErrorInputs();
+  const { id } = useParams<'id'>();
+  const [fullName, setFullName] = useState("");
+  const [dataNascimento, setDataNascimento] = useState("");
+  const [address, setAddress] = useState("");
+  const [responsibleTeacher, setResponsibleTeacher] = useState("");
+  const [phoneResponsibleTeacher, setPhoneResponsibleTeacher] = useState("");
+  const [shift, setShift] = useState<ClassShift>();
 
-    // if (email && password) {
-    //   navigate("home");
-    // }
+
+  const handleSave = () => {
+    // Construa um objeto com as informações dos campos
+    const updatedData = {
+      id: Number(id),
+      name: fullName,
+      born_date: dataNascimento,
+      address: address,
+      tutor_name: responsibleTeacher,
+      tutor_phone: phoneResponsibleTeacher,
+      class_shift: shift ? shift.toString() : ''
+    };
+  
+    // Chame o serviço para atualizar os dados
+    AlunosServices.create(updatedData)
+      .then((result) => {
+        if (result instanceof Error) {
+          alert(result.message);
+        } else {
+          navigate('/home');
+        }
+      });
   };
 
   return (
@@ -69,6 +84,7 @@ const RegisterStudent = () => {
             onChange={(e) => setFullName(e.target.value)}
             label="Nome completo"
             variant="outlined"
+            data-test="name_aluno"
           />
 
           <TextField
@@ -80,6 +96,7 @@ const RegisterStudent = () => {
             onChange={(e) => setDataNascimento(e.target.value)}
             label="Data de Nascimento"
             variant="outlined"
+            data-test="date"
           />
 
           <TextField
@@ -90,6 +107,7 @@ const RegisterStudent = () => {
             onChange={(e) => setAddress(e.target.value)}
             label="Endereço"
             variant="outlined"
+            data-test="address"
           />
         </Column>
 
@@ -102,6 +120,7 @@ const RegisterStudent = () => {
             onChange={(e) => setResponsibleTeacher(e.target.value)}
             label="Nome do tutor responsável"
             variant="outlined"
+            data-test="name_tutor"
           />
 
           <TextField
@@ -112,6 +131,7 @@ const RegisterStudent = () => {
             onChange={(e) => setPhoneResponsibleTeacher(e.target.value)}
             label="Telefone do tutor responsável"
             variant="outlined"
+            data-test="phone_tutor"
           />
 
           <TextField
@@ -134,9 +154,11 @@ const RegisterStudent = () => {
         </Column>
       </Container>
 
-      <RegisterButton variant="contained" onClick={() => onClickEnter()}>
-        Salvar Informações
-      </RegisterButton>
+      <BodyRegisterButtonContainer>
+        <RegisterButton id="botton" variant="contained" onClick={handleSave}>
+          Salvar Informações
+        </RegisterButton>
+      </BodyRegisterButtonContainer>
     </>
   );
 };

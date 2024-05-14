@@ -6,8 +6,8 @@ import CardMedia from '@mui/material/CardMedia';
 
 import Header from "shared-components/header/Header";
 import { Descricao, Subtitle } from "./styles";
-import { nextEvent } from "data/nextEvent";
-import { MenuList } from "data/data";
+import { nextEvent } from "data-front/nextEvent";
+import { MenuList } from "data-front/data";
 
 
 const EventsOld = () => {

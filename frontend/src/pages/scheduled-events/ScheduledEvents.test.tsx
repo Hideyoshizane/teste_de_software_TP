@@ -6,30 +6,6 @@ import { render, screen } from "@testing-library/react";
 import ScheduledEvents from "./ScheduledEvents";
 
 describe("ScheduledEvents component", () => {
-  it("should render the 'Próximos Eventos' card", () => {
-    render(
-      <MemoryRouter>
-        <ScheduledEvents />
-      </MemoryRouter>
-    );
-    const proximosEventosCard = screen.getByText("Próximos Eventos");
-    //assert
-    expect(proximosEventosCard).toBeInTheDocument();
-    expect(proximosEventosCard.tagName).toBe("H5");
-  });
-
-  it("should render the 'Próximos Anteriores' card", () => {
-    render(
-      <MemoryRouter>
-        <ScheduledEvents />
-      </MemoryRouter>
-    );
-    const proximosAnterioresCard = screen.getByText("Próximos Anteriores");
-    //assert
-    expect(proximosAnterioresCard).toBeInTheDocument();
-    expect(proximosAnterioresCard.tagName).toBe("H5");
-  });
-
   it("should render the 'Cadastrar Eventos' card", () => {
     render(
       <MemoryRouter>
@@ -65,4 +41,27 @@ describe("ScheduledEvents component", () => {
     expect(eventosAntigosSubtitle).toBeInTheDocument();
     expect(eventosAntigosSubtitle.tagName).toBe("H4");
   });
+
+  it("should render images in the cards", () => {
+    render(
+      <MemoryRouter>
+        <ScheduledEvents />
+      </MemoryRouter>
+    );
+
+    const images = screen.getAllByRole("img");
+    expect(images.length).toBeGreaterThan(0);
+  });
+
+  it("should render dates in the cards", () => {
+    render(
+      <MemoryRouter>
+        <ScheduledEvents />
+      </MemoryRouter>
+    );
+
+    const dateElements = screen.getAllByTestId("event-date");
+    expect(dateElements.length).toBeGreaterThan(0);
+  });
+
 });

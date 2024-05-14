@@ -1,8 +1,7 @@
 import React from "react";
 import { Box } from '@mui/system';
-import { useNavigate } from "react-router-dom";
 import Header from "shared-components/header/Header";
-import { Button, Card, CardContent, Grid, Paper, Typography } from "@mui/material";
+import { Card, CardContent, Grid } from "@mui/material";
 
 import CadastroAlunoIcon from "assets/svgs/CadastroAlunoIcon";
 import ListaDePresenca from "assets/svgs/ListaDePresencaIcon";
@@ -16,11 +15,11 @@ const Home = () => {
   }
 
   const onNavigatePresenca = () =>{
-    window.location.replace('/lista-de-presenca');
+    window.location.replace('/attendance-list');
   }
 
   const onNavigateRelatorio = () =>{
-    window.location.replace('/relatorio-de-presenca');
+    window.location.replace('/attendance-report');
   }
 
   const onNavigateListStudent = () =>{
@@ -31,6 +30,13 @@ const Home = () => {
     window.location.replace('/scheduled-events');
   }
 
+  const onNavigatePeriodoLetivo = () => {
+    window.location.replace('/periodo-letivo');
+  }
+
+  const onNavigateNoClassDays = () => {
+    window.location.replace('/no-class-day');
+  }
 
   return (
     <>
@@ -104,6 +110,32 @@ const Home = () => {
                   </BoxImage>
                   <Description>
                     Agenda de Eventos
+                  </Description>
+                </CardContent>
+              </Card>
+            </GridCards>
+
+            <GridCards item onClick={() => onNavigatePeriodoLetivo()}>
+              <Card>
+                <CardContent >
+                  <BoxImage >
+                    <EventosIcon width={300} height={300}/>
+                  </BoxImage>
+                  <Description>
+                    Período Letivo
+                  </Description>
+                </CardContent>
+              </Card>
+            </GridCards>
+
+            <GridCards item onClick={() => onNavigateNoClassDays()}>
+              <Card>
+                <CardContent >
+                  <BoxImage >
+                    <EventosIcon width={300} height={300}/>
+                  </BoxImage>
+                  <Description>
+                    Dias sem aula
                   </Description>
                 </CardContent>
               </Card>

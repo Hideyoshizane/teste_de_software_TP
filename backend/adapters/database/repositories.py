@@ -10,14 +10,15 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import column
 
 from backend.core.domain.models import (
-    Professor, Aluno, PeriodoLetivo
+    Professor, Aluno, PeriodoLetivo, DiaSemAula
 )
 from backend.core.interfaces.repositories import(
-    ProfessorRepository, AlunoRepository, PeriodoLetivoRepository
+    ProfessorRepository, AlunoRepository, PeriodoLetivoRepository,
+    DiaSemAulaRepository
 )
 
 from backend.adapters.database.database import (
-    ProfessorORM, AlunoORM, PeriodoLetivoORM
+    ProfessorORM, AlunoORM, PeriodoLetivoORM, DiaSemAulaORM
 )
 
 class ProfessorRepositoryPostgres(ProfessorRepository):
@@ -302,3 +303,79 @@ class PeriodoLetivoRepositoryPostgres(PeriodoLetivoRepository):
         if periodos_letivos is None:
             return []
         return periodos_letivos
+
+
+class DiaSemAulaRepositoryPostgres(DiaSemAulaRepository):
+    """DiaSemAula repository class for PostgreSQL implementation."""
+    def __init__(self, db: Session):
+        self.database = db
+
+    def save(self, dia_sem_aula: DiaSemAula) -> DiaSemAula | str:
+        """Saves a DiaSemAula object to the database. If the save fails,
+        an exception is raised and the error message is returned.\\
+        Args:
+            diaSemAula (DiaSemAula): DiaSemAula object to be saved.
+        Returns:
+            DiaSemAula | str: DiaSemAula object if the save is successful.
+                Otherwise, returns an error message.
+        """
+        try:
+            dia_sem_aula_orm = DiaSemAulaORM.from_dia_sem_aula(dia_sem_aula)
+            self.database.add(dia_sem_aula_orm)
+            self.database.commit()
+            self.database.refresh(dia_sem_aula_orm)
+        except SQLAlchemyError as exception:
+            error_message = f"An error occurred: {exception}"
+            print(error_message)
+            return error_message
+        return dia_sem_aula
+
+
+    def get_by_id(self, dia_sem_aula_id: int) -> DiaSemAula | str:
+        """Retrieves a DiaSemAula object from the database by its ID. If the
+        retrieval fails, an error message is returned.\\
+        Args:
+            dia_sem_aula_id (int): DiaSemAula's ID.
+        Returns:
+            DiaSemAula | str: DiaSemAula object if the retrieval is successful.
+                Otherwise, returns an error message.
+        """
+        dia_sem_aula = self.database.query(DiaSemAulaORM).filter_by(id=dia_sem_aula_id).first()
+        if dia_sem_aula is None:
+            return f"DiaSemAula with ID {dia_sem_aula_id} not found"
+        return dia_sem_aula
+
+
+    def get_all_dias_sem_aula(self) -> list[DiaSemAula]:
+        """Retrieves all DiaSemAula objects from the database. If the retrieval
+        fails, an empty list is returned.\\
+        Returns:
+            list[DiaSemAula]: List of DiaSemAula objects.
+        """
+        dias_sem_aula_orm = self.database.query(DiaSemAulaORM).all()
+        dias_sem_aula = [
+            DiaSemAulaORM.to_dia_sem_aula(dia_sem_aula)
+                for dia_sem_aula in dias_sem_aula_orm
+            ]
+        if dias_sem_aula is None:
+            return []
+        return dias_sem_aula
+
+
+    def delete(self, dia_sem_aula: DiaSemAula) -> str:
+        """Deletes a DiaSemAula object from the database. If the deletion
+        fails, an exception is raised and the error message is returned.\\
+        Args:
+            dia_sem_aula (DiaSemAula): DiaSemAula object to be deleted.
+        Returns:
+            str: Error message if the deletion fails. Otherwise,
+                returns a success message.
+        """
+        try:
+            self.database.delete(dia_sem_aula)
+            self.database.commit()
+        except SQLAlchemyError as exception:
+            error_message = f"An error occurred: {exception}"
+            print(error_message)
+            return error_message
+        return "Removed successfully"

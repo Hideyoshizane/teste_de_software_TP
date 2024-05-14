@@ -3,7 +3,8 @@ import sys
 sys.path.append('../../../')
 
 from backend.adapters.controllers.controller import (
-    AlunoController, ProfessorController, PeriodoLetivoController
+    AlunoController, ProfessorController, PeriodoLetivoController,
+    DiaSemAulaController
 )
 
 app = Blueprint('routes', __name__)
@@ -258,5 +259,76 @@ def get_all_periodo_letivos() -> tuple:
     data = PeriodoLetivoController().get_all_periodo_letivos()
     if not data:
         return jsonify({"error": "There are no periodo letivos in the database"}), 400
+
+    return jsonify(data), 200
+
+
+####                                                   ####
+#       Implementação das rotas para Período Letivo       #
+####                                                   ####
+
+@app.route("/create_dia_sem_aula", methods=['POST'])
+def create_dia_sem_aula() -> tuple:
+    """Create a new dia sem aula.\\
+    Returns:
+        A tuple containing the data and a status code.
+    """
+    data = request.get_json()
+    if not data:
+        return jsonify({'error': 'Invalid data'}), 400
+
+    periodo_letivo_id = data.get('periodo_letivo_id')
+    date = data.get('date')
+    description = data.get("reason")
+
+    response = DiaSemAulaController().create(periodo_letivo_id, date, description)
+    if not response:
+        return jsonify({"error":"Invalid credentials"}), 200
+
+    return data, 200
+
+@app.route("/update_dia_sem_aula", methods=['POST'])
+def update_dia_sem_aula() -> tuple:
+    data = request.get_json()
+    if not data.get('id'):
+        return jsonify({'error': 'ID not given'}), 400
+
+    dia_sem_aula_id = data.get('id')
+    date = data.get('date')
+    description = data.get("reason")
+
+    response = DiaSemAulaController().update(dia_sem_aula_id, date, description)
+    if not response:
+        return jsonify({"error":"Invalid credentials"}), 200
+    return data, 200
+
+
+@app.route("/delete_dia_sem_aula", methods=['POST'])
+def delete_dia_sem_aula() -> tuple:
+    """Delete a dia sem aula.\\
+    Returns:
+        A tuple containing the data and a status code.
+    """
+    data = request.get_json()
+    if not data.get('id'):
+        return jsonify({'error': 'Invalid data'}), 400
+
+    dia_sem_aula_id = data.get('id')
+
+    response = DiaSemAulaController().remove(dia_sem_aula_id)
+    if not response:
+        return jsonify({"error":"Invalid credentials"}), 200
+    return data, 200
+
+
+@app.route("/all_dias_sem_aula", methods=['GET'])
+def get_all_dias_sem_aula() -> tuple:
+    """Get all dias sem aula from the database.\\
+    Returns:
+        A tuple containing the data and a status code.
+    """
+    data = DiaSemAulaController().get_all_dias_sem_aula()
+    if not data:
+        return jsonify({"error": "There are no dias sem aula in the database"}), 400
 
     return jsonify(data), 200

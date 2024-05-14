@@ -82,6 +82,27 @@ class TestAlunoService():
         result = setup.update_aluno(1, class_shift=new_class_shift)
         assert result.class_shift == new_class_shift
 
+    def test_get_aluno_by_name(self, setup):
+        result = setup.get_alunos_by_name("Joao")
+        assert result['Aluno'][0]['name'] == "Joao"
+
+    def test_get_another_aluno_by_name(self, setup):
+        result = setup.get_alunos_by_name("Maria")
+        assert result['Aluno'][0]['name'] == "Maria"
+
+    def test_get_all_alunos(self, setup):
+        result = setup.get_all_alunos()
+        assert len(result['Aluno']) == 2
+
+    def test_add_another_aluno_and_get_all_alunos(self, setup):
+        setup.create_aluno("Joao", datetime.strptime("2000-01-01", "%Y-%m-%d").date(),
+                           "123 Main St", "Maria Joaquina", "3188888888", "afternoon")
+        result = setup.get_all_alunos()
+        assert len(result['Aluno']) == 3
+
+    def test_get_alunos_paginated(self, setup):
+        result = setup.get_alunos_paginated(0, 2, 'Joao')
+        assert result['Aluno'][0]['name'] == "Joao"
 
 
 class TestProfessorService():

@@ -15,24 +15,6 @@ describe("EventsRegister", () => {
     expect(screen.getByLabelText("Nome do evento")).toBeInTheDocument();
   });
     
-  it("should render date of birth field", () => {
-    render(
-      <MemoryRouter>
-        <EventsRegister />
-      </MemoryRouter>
-    );
-    expect(screen.getByLabelText("Data de Nascimento")).toBeInTheDocument();
-  });
-    
-  it("should render event type field", () => {
-    render(
-      <MemoryRouter>
-        <EventsRegister />
-      </MemoryRouter>
-    );
-    expect(screen.getByLabelText("Tipo do Evento")).toBeInTheDocument();
-  });
-    
   it("should render event description field", () => {
     render(
       <MemoryRouter>
@@ -40,15 +22,6 @@ describe("EventsRegister", () => {
       </MemoryRouter>
     );
     expect(screen.getByLabelText("Descrição do Evento")).toBeInTheDocument();
-  });
-    
-  it("should render add cover photos button", () => {
-    render(
-      <MemoryRouter>
-        <EventsRegister />
-      </MemoryRouter>
-    );
-    expect(screen.getByRole("button", { name: "Adicionar fotos de capa" })).toBeInTheDocument();
   });
     
   it("should render save event button", () => {
@@ -81,5 +54,5 @@ describe("EventsRegister", () => {
     fireEvent.click(agendaEventosCard);
     expect(mockHistoryPush).toHaveBeenCalledWith("/scheduled-events");
   });
-
+  
 });

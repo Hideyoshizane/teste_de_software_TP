@@ -69,6 +69,7 @@ const Login = () => {
           variant="outlined"
           helperText={errorEmail && "Campo obrigatório"}
           role="alert"
+          data-test="username"
         />
 
         <TextField
@@ -80,6 +81,7 @@ const Login = () => {
           variant="outlined"
           helperText={errorPassword ? "Campo obrigatório" : ""}
           inputProps={{ "aria-label": "password-helper-text" }}
+          data-test="password"
         />
 
         {error && <p>{error}</p>}

@@ -5,9 +5,8 @@ import { Button, Card, CardActionArea, CardContent, Grid, Paper, TextField, Typo
 
 import Header from "shared-components/header/Header";
 import { Container, Column, RegisterButton } from "./styles";
-import { nextEvent } from "data/nextEvent";
-import { MenuList } from "data/data";
-
+import { nextEvent } from "data-front/nextEvent";
+import { MenuList } from "data-front/data";
 
 const EventsAddPhotos = () => {
 

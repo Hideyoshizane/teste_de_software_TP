@@ -23,5 +23,9 @@
   },
   "paths": {
     "@mui/*": ["./node_modules/@material-ui/*/"]
-  }
+  },
+  "exclude": [
+    "cypress",
+    "cypress.config.ts" // Adicione essa linha
+  ]
 }
