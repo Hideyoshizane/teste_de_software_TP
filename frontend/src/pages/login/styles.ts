@@ -14,9 +14,22 @@ export const Body = styled(Box)(({ theme }) => ({
   gap: '24px',
   alignItems: 'center',
   justifyContent: 'center',
-  padding: '32px 16px',
+  padding: '50px 16px',
 }))
 
 export const LoginButton = styled(Button)(({theme}) => ({
-  marginTop: '24px'
-}))
+  marginTop: '24px',
+  [theme.breakpoints.down('sm')]: {
+    width: '50%',
+  },
+  [theme.breakpoints.up('md')]: {
+    width: '20%',
+  },
+  [theme.breakpoints.up('lg')]: {
+    width: '15%',
+  },
+  [theme.breakpoints.between('sm', 'md')]: {
+    width: '25%',
+  }
+}));
+

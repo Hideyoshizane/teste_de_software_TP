@@ -4,7 +4,7 @@ import LogoIcon from "../../assets/svgs/LogoIcon";
 
 const Footer = () => (
   <Container>
-    <LogoIcon width={44} height={58} />
+    <img src={require("../../images/Logo_BHZ.png")} alt="Logo BHZ" style={{ width: "50px", height: "60px" }} />
     <Title>
       {"Sistema de "}
       <Subtitle>gestão escolar</Subtitle>

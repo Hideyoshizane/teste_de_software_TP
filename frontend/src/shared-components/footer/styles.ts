@@ -12,6 +12,7 @@ export const Container = styled(Box)(({theme}) => ({
   gap: '16px',
   position: 'fixed',
   bottom: 0,
+  padding: '8px 0',
 }))
 
 export const Title = styled(Typography)(({theme}) => ({

@@ -48,7 +48,7 @@ const Header = () => {
   return (
     <Container>
       <LogoBox>
-        <LogoIcon height={60} />
+      <img src={require("../../images/Logo_BHZ1.png")} alt="Logo BHZ" style={{ width: "100px", height: "65px" }} />
         <Box>
           <Title>Sistema de</Title>
           <Subtitle>gestão escolar</Subtitle>

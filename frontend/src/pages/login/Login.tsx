@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import LoginHeader from "../../shared-components/login-header/LoginHeader";
 import { Body, LoginButton } from "./styles";
-import { TextField } from "@mui/material";
+import { InputAdornment, TextField } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { AccountCircle } from "@mui/icons-material";
+import EmailIcon from '@mui/icons-material/Email';
+import LockIcon from '@mui/icons-material/Lock';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -38,7 +41,7 @@ const Login = () => {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify({ email, password }),
       })
         .then(response => {
           if (response.ok) {
@@ -68,6 +71,11 @@ const Login = () => {
           label="E-mail"
           variant="outlined"
           helperText={errorEmail && "Campo obrigatório"}
+          InputProps={{
+            startAdornment: (
+              <EmailIcon color="action" />
+            )
+          }}
           role="alert"
           data-test="username"
         />
@@ -80,6 +88,11 @@ const Login = () => {
           label="Senha"
           variant="outlined"
           helperText={errorPassword ? "Campo obrigatório" : ""}
+          InputProps={{
+            startAdornment: (
+              <LockIcon color="action" />
+            )
+          }}
           inputProps={{ "aria-label": "password-helper-text" }}
           data-test="password"
         />
