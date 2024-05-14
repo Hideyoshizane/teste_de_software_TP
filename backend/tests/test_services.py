@@ -8,10 +8,11 @@ sys.path.append('../')
 print(sys.path)
 from backend.tests.database_mock import (
     AlunoRepositoryPostgresMock, ProfessorRepositoryPostgresMock,
-    PeriodoLetivoRepositoryPostgresMock
+    PeriodoLetivoRepositoryPostgresMock, DiaSemAulaRepositoryPostgresMock
 )
 from backend.core.domain.services import (
-    AlunoService, ProfessorService, PeriodoLetivoService
+    AlunoService, ProfessorService, PeriodoLetivoService,
+    DiaSemAulaService
 )
 
 class TestAlunoService():
@@ -281,3 +282,53 @@ class TestPeriodoLetivoService():
         result = setup.get_all_periodos_letivos()
 
         assert len(result['PeriodoLetivo']) == 3
+
+
+class TestDiasSemAulaService():
+    """Unit tests for DiasSemAulaService. To enable the tests,
+    a mock repository is used."""
+
+    @pytest.fixture()
+    def setup(self):
+        dias_sem_aula_repository = DiaSemAulaRepositoryPostgresMock()
+        dias_sem_aula_service = DiaSemAulaService(dias_sem_aula_repository)
+        return dias_sem_aula_service
+
+    def test_create_dia_sem_aula(self, setup):
+        date = datetime.strptime("2024-04-21", "%Y-%m-%d").date()
+        reason = "Holiday"
+        result = setup.create_dia_sem_aula(1, date, reason)
+
+        assert result.date == date
+
+    def test_update_dia_sem_aula(self, setup):
+        new_date = datetime.strptime("2024-01-01", "%Y-%m-%d").date()
+        result = setup.update_dia_sem_aula(1, new_date)
+
+        assert result.date == new_date
+
+    def test_remove_dia_sem_aula(self, setup):
+        result = setup.remove_dia_sem_aula(1)
+        assert result == "Removed successfully"
+
+    def test_get_all_dias_sem_aula(self, setup):
+        result = setup.get_all_dias_sem_aula()
+        assert len(result['DiaSemAula']) == 2
+
+    def test_add_another_dia_sem_aula_and_get_all_dias_sem_aula(self, setup):
+        date = datetime.strptime("2024-01-02", "%Y-%m-%d").date()
+        reason = "Holiday"
+        setup.create_dia_sem_aula(1, date, reason)
+
+        result = setup.get_all_dias_sem_aula()
+
+        assert len(result['DiaSemAula']) == 3
+
+    def test_add_a_dia_sem_aula_and_get_all_dias_sem_aula(self, setup):
+        date = datetime.strptime("2024-01-03", "%Y-%m-%d").date()
+        reason = "Holiday"
+        setup.create_dia_sem_aula(1, date, reason)
+
+        result = setup.get_all_dias_sem_aula()
+
+        assert len(result['DiaSemAula']) == 3

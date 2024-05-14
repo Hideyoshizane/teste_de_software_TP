@@ -4,3 +4,4 @@ flask-cors==3.*
 SQLAlchemy==2.*
 pytest==7.*
 psycopg2-binary
+coverage

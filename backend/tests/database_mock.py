@@ -1,10 +1,11 @@
 from datetime import datetime
 
 from backend.core.interfaces.repositories import(
-    ProfessorRepository, AlunoRepository, PeriodoLetivoRepository
+    ProfessorRepository, AlunoRepository, PeriodoLetivoRepository,
+    DiaSemAulaRepository
     )
 from backend.core.domain.models import (
-    Aluno, Professor, PeriodoLetivo
+    Aluno, Professor, PeriodoLetivo, DiaSemAula
 )
 
 class AlunoRepositoryPostgresMock(AlunoRepository):
@@ -174,4 +175,49 @@ class PeriodoLetivoRepositoryPostgresMock(PeriodoLetivoRepository):
         return "Removed successfully"
 
     def get_all_periodos_letivos(self) -> list[PeriodoLetivo]:
+        return self.database
+
+
+class DiaSemAulaRepositoryPostgresMock(DiaSemAulaRepository):
+    """Mock repository for DiaSemAulaRepository. This class is used to
+    test the DiaSemAulaService class.
+    """
+    def __init__(self):
+        """Initializes the mock database with some data. Note that the
+        database here is just a list of DiaSemAula objects.
+        """
+        self.database = [
+            DiaSemAula(1, 1, datetime.strptime("2024-01-01", "%Y-%m-%d").date(),
+                       'Holiday'),
+            DiaSemAula(2, 1, datetime.strptime("2024-04-01", "%Y-%m-%d").date(),
+                       'Holiday')
+            ]
+
+    def save(self, dia_sem_aula: DiaSemAula) -> DiaSemAula | str:
+        # Verify if the dia_sem_aula already exists
+        if dia_sem_aula.id is None:
+            dia_sem_aula.id = len(self.database) + 1
+            self.database.append(dia_sem_aula)
+            return dia_sem_aula
+
+        for dia_sem_aula_database in self.database:
+            if dia_sem_aula_database.id == dia_sem_aula.id:
+                dia_sem_aula_database = dia_sem_aula
+                return dia_sem_aula
+
+
+    def get_by_id(self, dia_sem_aula_id: int) -> DiaSemAula | str:
+        for dia_sem_aula in self.database:
+            if dia_sem_aula.id == dia_sem_aula_id:
+                return dia_sem_aula
+        return f"DiaSemAula with ID {dia_sem_aula_id} not found"
+
+
+    def delete(self, dia_sem_aula: int) -> str:
+        for dia_sem_aula_database in self.database:
+            if dia_sem_aula_database.id == dia_sem_aula:
+                self.database.remove(dia_sem_aula_database)
+        return "Removed successfully"
+
+    def get_all_dias_sem_aula(self) -> list[DiaSemAula]:
         return self.database
