@@ -35,7 +35,7 @@ export const BoxImage = styled(Box)(({theme}) => ({
   display:'flex', 
   justifyContent:'center',
   alignItems:'center',
-  backgroundColor: '#93DC9F',
+  backgroundColor: '#B8E0D2',
   borderRadius: 10, 
   marginBottom: 2,
 }))

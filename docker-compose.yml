@@ -1,4 +1,4 @@
-version: '3.9'
+version: '3.3'
 
 services:
   db:
@@ -11,7 +11,8 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_DB=postgres
     networks:
-      - my-network
+      my-network:
+        ipv4_address: 172.20.0.2
 
   frontend:
     build:
@@ -42,3 +43,6 @@ services:
 networks:
   my-network:
     driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

@@ -20,7 +20,7 @@ class DatabaseSession:
     """
     def __init__(self):
         """Initializes the database engine and session."""
-        ips = ['172.19.0.2', '172.18.0.2']
+        ips = ['172.20.0.2']
         for ip in ips:
             try:
                 # postgresql://<username>:<password>@<host>:<port>/<database_name>
@@ -254,8 +254,8 @@ def create_some_professor(engine: Engine):
     session_maker = sessionmaker(bind=engine)
     session = session_maker()
     professor_list = [
-        {'name': 'William', 'email': 'william@bhzconnection.org.br',
-        'password': 'password123'}
+        {'name': 'Thiago', 'email': 'thiago@bhzconnection.org.br',
+        'password': '123senha'}
     ]
     for professor in professor_list:
         new_professor = ProfessorORM(name=professor['name'],

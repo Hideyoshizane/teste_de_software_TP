@@ -21,13 +21,13 @@ import { AppRoutes } from "routes";
 let theme = createTheme({
   palette: {
     primary: {
-      main: "#A5CEF4",
+      main: "#9381FF",
     },
     secondary: {
-      main: "#E19626",
+      main: "#1E4831",
     },
     text: {
-      primary: "#000",
+      primary: "#000000",
     },
   },
 });
