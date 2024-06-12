@@ -45,11 +45,6 @@ jobs:
 
       # Upload coverage to Codecov
       - uses: actions/checkout@master
-      - uses: codecov/codecov-action@v3
+      - uses: codecov/codecov-action@v4.0.1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          # directory: /home/runner/work/Sistema_gestao_escolar/Sistema_gestao_escolar/backend/tests/
-          # files: /home/runner/work/Sistema_gestao_escolar/Sistema_gestao_escolar/backend/tests/coverage.xml
-          directory: /home/runner/work/Sistema_gestao_escolar/Sistema_gestao_escolar/
-          fail_ci_if_error: false
-          verbose: true
