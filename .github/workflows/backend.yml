@@ -4,7 +4,7 @@ on:
   push:
     branches: ["main"]
   pull_request:
-      branches: ["main"]
+    branches: ["main"]
 
 jobs:
   test:
@@ -19,32 +19,24 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r backend/requirements.txt
 
-      - name: Run tests and collect coverage
-        run: |
-          coverage run -m pytest backend/tests/test_services.py
-          coverage xml
-      #- name: Generate coverage report
-      #  run: |
-      #    pip install pytest
-      #    pip install pytest-cov
-      #    pytest -k backend/tests/test_services.py --cov=./ --cov-report=xml
-      # Start containers
       - name: Start backend and DB containers
         run: |
           docker-compose -f docker-compose.yml up --build -d db backend
           sleep 30
 
-      # Run integration tests
-      #- name: Run integration tests and collect coverage
-      #  run: |
-      #    coverage run -m pytest backend/tests/test_controller.py
-      #_    coverage xml -o backend/tests/integrarion_tests_coverage.xml
+      - name: Run tests and collect coverage
+        run: |
+          coverage run -m pytest backend/tests/test_services.py
+          coverage xml
 
       - name: Stop containers
         run: docker-compose down
 
-      # Upload coverage to Codecov
-      - uses: actions/checkout@master
-      - uses: codecov/codecov-action@v4.0.1
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
+          files: coverage.xml
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: true
